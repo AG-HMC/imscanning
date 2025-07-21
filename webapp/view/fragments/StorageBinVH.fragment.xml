@@ -1,0 +1,13 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="{i18n>StorageBins}"
+		items="{
+			path: '/ZEWM_I_StorageBinVH'
+		}"
+		search=".onValueHelpSearch($event,'SB')"
+		confirm=".onValueHelpConfirm($event,'SB')"
+		cancel=".onValueHelpClose">
+		<StandardListItem
+			title="{StorageBin}" />
+	</SelectDialog>
+</core:FragmentDefinition>

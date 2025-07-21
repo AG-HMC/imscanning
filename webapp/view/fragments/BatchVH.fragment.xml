@@ -1,0 +1,13 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="{i18n>Batches}"
+		items="{
+			path: '/ZEWM_I_PhysStkBatchVH'
+		}"
+		search=".onValueHelpSearch($event,'Batch')"
+		confirm=".onValueHelpConfirm($event,'Batch')"
+		cancel=".onValueHelpClose">
+		<StandardListItem
+			title="{Batch}"/>
+	</SelectDialog>
+</core:FragmentDefinition>

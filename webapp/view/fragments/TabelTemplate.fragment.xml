@@ -1,0 +1,16 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <ColumnListItem>
+							<cells>
+								<Text text="{StorageType}"/>
+								<Text text="{StorageBin}"/>
+								<Text text="{Product}"/>
+								<Text text="{Description}"/>
+								<Text text="{HandlingUnit}"/>
+								<Text text="{Batch}"/>
+								<Text text="{SerialNumber}"/>
+								<ObjectNumber number="{Quantity}" unit="{BaseUoM}" />
+								<Text text="{StockTypeDescription}"/>
+								<Button icon="{= ${globalDataModel>/Source} === 'Stock Type' ? 'sap-icon://action-settings' : 'sap-icon://cart'}" type="Transparent" press="onMoveItem"/>
+							</cells>
+						</ColumnListItem>
+</core:FragmentDefinition>

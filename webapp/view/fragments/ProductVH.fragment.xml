@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="{i18n>Products}"
+		items="{
+			path: '/ZEWM_I_ProductVH'
+		}"
+		search=".onValueHelpSearch($event,'Product')"
+		confirm=".onValueHelpConfirm($event,'Product')"
+		cancel=".onValueHelpClose">
+		<StandardListItem
+			title="{Product}"
+			description="{Product_Text}" />
+	</SelectDialog>
+</core:FragmentDefinition>

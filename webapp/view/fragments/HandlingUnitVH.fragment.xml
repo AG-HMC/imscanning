@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="{i18n>HandlingUnits}"
+		items="{
+			path: '/ZEWM_I_HandlingUnitTypeVH'
+		}"
+		search=".onValueHelpSearch($event,'HU')"
+		confirm=".onValueHelpConfirm($event,'HU')"
+		cancel=".onValueHelpClose">
+		<StandardListItem
+			title="{HandlingUnit}"
+			description="{HandlingUnitType_Text}" />
+	</SelectDialog>
+</core:FragmentDefinition>

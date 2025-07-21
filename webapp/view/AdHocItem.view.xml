@@ -1,0 +1,110 @@
+<mvc:View
+    controllerName="imscanning.controller.AdHocItem"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:ndc="sap.ndc"
+    displayBlock="true"
+	xmlns:core="sap.ui.core"
+	xmlns:form="sap.ui.layout.form"
+	xmlns:layout="sap.ui.layout"
+	xmlns:f="sap.f">
+	<f:DynamicPage id="dynamicPage" title="Inventory Movement" showFooter="true">
+		<f:content>
+			<layout:VerticalLayout class="sapUiSmallMargin">
+				<Toolbar>
+				<Title text="Total item(s) selected = {= ${globalDataModel>/selectedItems}.length}" level="H2" />
+				<ToolbarSpacer/>
+				<Title text="{path: 'globalDataModel>/selectedItems', formatter: '.handlePendingItems'}" level="H2" />
+				</Toolbar>
+				<!-- Product Information -->
+				<form:SimpleForm
+                    editable="false"
+                    layout="ColumnLayout"
+                    columnsM="2"
+                    columnsL="3"
+                    columnsXL="4"
+					binding="{path: 'globalDataModel>/ActiveItem'}">
+					<Label text="{i18n>Product}">
+					</Label>
+					<Text text="{globalDataModel>Product}">
+			
+					</Text>
+					<Label text="{i18n>SerialNumber}" >
+			
+					</Label>
+					<Text text="{globalDataModel>SerialNumber}" >
+				
+					</Text>
+					 
+					<Label text="{i18n>Batch}" />
+					<Text text="{globalDataModel>Batch}" />
+					<Label text="{i18n>Description}" />
+					<Text text="{globalDataModel>Description}" />
+					<Label text="{i18n>SourceStorageType}" />
+					<Text text="{globalDataModel>StorageType}" />
+					<Label text="{i18n>SourceStorageBin}" />
+					<Text text="{globalDataModel>StorageBin}" />
+					<Label text="{i18n>SourceQuantity}" />
+					<ObjectNumber number="{globalDataModel>Quantity}" unit="{globalDataModel>BaseUoM}" />
+					<Label text="{i18n>SourceHU}" />
+					<Text text="{globalDataModel>HandlingUnit}" />
+					<Label text="{i18n>SourceStockType}" />
+					<Text text="{globalDataModel>StockType}" />
+				</form:SimpleForm>
+				<!-- Movement Data -->
+				<Title text="Movement Data" level="H2" />
+				<form:SimpleForm editable="true" layout="ResponsiveGridLayout"
+						columnsXL="2"
+						columnsL="2"
+						columnsM="1"
+						binding="{path: 'globalDataModel>/TargetData'}">
+					<Label text="Target Storage Type" />
+					<Input value="{globalDataModel>StorageType}" placeholder="Enter target storage type"  showValueHelp="true" valueHelpRequest="onValueHelpRequest('ST')">
+						<layoutData>
+							<layout:GridData span="XL2 L2 M2 S6" />
+						</layoutData>
+					</Input>
+					<Label text="Target Storage Bin" />
+					<HBox>
+						<Input value="{globalDataModel>StorageBin}" placeholder="Enter target bin"  showValueHelp="true" valueHelpRequest="onValueHelpRequest('SB_T')" width="9rem">
+							<layoutData>
+								<layout:GridData span="XL2 L2 M2 S6" />
+							</layoutData>
+						</Input>
+						<ndc:BarcodeScannerButton
+                            scanSuccess="onScanSuccess($event,'SB')"
+                            scanFail="onScanError($event,'SB')"
+                            inputLiveUpdate="onScanLiveupdate($event,'SB')"
+							class="sampleBarcodeScannerButtonWithZebraEB"
+                            dialogTitle="Barcode Scanner for Target Bin">
+						</ndc:BarcodeScannerButton>
+					</HBox>
+					<Label text="Target Quantity" />
+					<Input value="{globalDataModel>Quantity}" type="Number">
+						<layoutData>
+							<layout:GridData span="XL2 L2 M2 S6" />
+						</layoutData>
+					</Input>
+					<Label text="Target HU"  visible="false"/>
+					<Input value="{globalDataModel>HandlingUnit}" visible="false">
+						<layoutData>
+							<layout:GridData span="XL2 L2 M2 S6" />
+						</layoutData>
+					</Input>
+				</form:SimpleForm>
+			</layout:VerticalLayout>
+		</f:content>
+		<f:footer>
+			<OverflowToolbar>
+			<Button visible="{path: 'globalDataModel>/errorMessages', formatter: '.handleErrorCountVisible'}"
+					icon="sap-icon://message-error"
+					type="Negative"
+					text= "{path: 'globalDataModel>/errorMessages', formatter: '.handleErrorCount'}"
+					press=".handleMessageViewPress"/>
+				<ToolbarSpacer/>
+				<Button type="Accept" text="Confirm" press="onConfirm"/>
+				<Button type="Reject" text="Cancel" press="onCancel"/>
+			</OverflowToolbar>
+		</f:footer>
+	</f:DynamicPage>
+</mvc:View>

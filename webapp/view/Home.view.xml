@@ -1,0 +1,13 @@
+<mvc:View controllerName="imscanning.controller.Home"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}" showHeader="false">
+        <FlexBox direction="Column" justifyContent="Center" alignItems="Center" class="sapUiSizeMax">
+        <VBox alignItems="Center" justifyContent="Center">
+            <Button text="{i18n>AdHocMovements}" type="Emphasized" press="onAdHocPress('Ad Hoc')" class="sapUiTinyMargin"/>
+<!--       <Button text="Planned Movements" type="Emphasized" press="onPlannedPress" class="sapUiTinyMargin"/> -->
+            <Button text="{i18n>StockTypeChange}" type="Emphasized" press="onAdHocPress('Stock Type')" class="sapUiTinyMargin"/>
+        </VBox>
+        </FlexBox>
+    </Page>
+</mvc:View>

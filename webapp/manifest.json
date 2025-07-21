@@ -1,0 +1,186 @@
+{
+  "_version": "1.60.0",
+  "sap.app": {
+    "id": "imscanning",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.18.0",
+      "toolsId": "be313271-a1b3-4408-b032-87a97b0fa8ba"
+    },
+    "dataSources": {
+      "ZEWM_ADHOC_MOVEMENT_UI_VAN": {
+        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZEWM_ADHOC_MOVEMENT_UI_VAN',Version='0001')/$value/",
+        "type": "ODataAnnotation",
+        "settings": {
+          "localUri": "localService/mainService/ZEWM_ADHOC_MOVEMENT_UI_VAN.xml"
+        }
+      },
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZEWM_ADHOC_MOVEMENT_UI/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "ZEWM_ADHOC_MOVEMENT_UI_VAN"
+          ],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      },
+			"globalDataSource": {
+				"uri": "model/GlobalData.json",
+				"type": "JSON"
+			},
+      "postService":{
+        "uri": "/sap/opu/odata4/sap/api_warehouse_order_task_2/srvd_a2x/sap/warehouseorder/0001/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      },
+"stockUpdateService":{
+        "uri": "/sap/opu/odata/sap/Z_EWM_STOCKTYPE_CHANGE_SRV/",
+        "type": "OData"
+      },
+      "defaultValueService": {
+        "uri": "/sap/opu/odata/UI2/INTEROP/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.120.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "imscanning.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {}
+      },
+			"globalDataModel": {
+				"type": "sap.ui.model.json.JSONModel",
+				"dataSource": "globalDataSource"
+			},
+      "postServiceModel":{
+        "dataSource": "postService",
+        "type": "sap.ui.model.odata.v4.ODataModel",
+			"settings": {
+				"autoExpandSelect": true 
+			}
+      },
+      "stockUpdateModel":{
+        "dataSource": "stockUpdateService"
+      },
+      "defaultValueModel": {
+        "dataSource": "defaultValueService",
+        "preload": true,
+        "settings": {}
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "imscanning.view",
+        "async": true,
+        "viewPath": "imscanning.view"
+      },
+      "routes": [
+        {
+          "name": "RouteHome",
+          "pattern": "",
+          "target": [
+            "TargetHome"
+          ]
+        },
+        {
+          "name": "RouteAdHocList",
+          "pattern": "List/:target:",
+          "target": "TargetAdHocList"
+        },
+        {
+          "name": "RouteAdHocItem",
+          "pattern": "Item/:target:",
+          "target": "TargetAdHocItem"
+        }
+      ],
+      "targets": {
+        "TargetHome": {
+          "id": "Home",
+          "name": "Home",
+          "clearControlAggregation": false,
+          "transition": "slide"
+        },
+        "TargetAdHocList": {
+          "name": "AdHocList",
+          "viewId": "AdHocList",
+          "viewLevel": 2
+        },
+        "TargetAdHocItem": {
+          "name": "AdHocItem",
+          "viewId": "AdHocItem",
+          "viewLevel": 3
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "imscanning.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    }
+  }
+}

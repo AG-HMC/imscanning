@@ -1,0 +1,208 @@
+<mvc:View
+controllerName="imscanning.controller.AdHocList"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:ndc="sap.ndc"
+    displayBlock="true"
+	xmlns:f="sap.f"
+	xmlns:form="sap.ui.layout.form"
+	xmlns:l="sap.ui.layout"
+	xmlns:fb="sap.ui.comp.filterbar"
+	xmlns:core="sap.ui.core">
+	<f:DynamicPage id="idPage" fitContent="true" showFooter="{ parts: [
+    'globalDataModel>/Source',
+    'globalDataModel>/errorMessages'
+  ],
+  formatter: '.showFooter'
+}" headerPinned="true" headerExpanded="true" toggleHeaderOnTitleClick="true">
+<f:title>
+    <f:DynamicPageTitle>
+
+        <f:heading>
+            <HBox alignItems="Center">
+                <Button icon="sap-icon://nav-back"
+                        type="Transparent"
+                        tooltip="Back"
+                        press="onNavBack" />
+                <Title text="{= ${globalDataModel>/Source} !== 'Stock Type' ? 'Ad Hoc Movements' : 'Stock Type Change' }" level="H1" class="sapUiSmallMarginBegin"/>
+            </HBox>
+        </f:heading>
+
+    </f:DynamicPageTitle>
+</f:title>
+		<f:header>
+			<f:DynamicPageHeader id="idDynamicPageHeader" pinnable="true">
+				<f:content>
+					<fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search="onSearch" filterChange=".onFilterChange" showFilterConfiguration="false" showGoButton="false">
+						<fb:filterGroupItems>
+							<fb:FilterGroupItem name="Warehouse Number" label="{i18n>WarehouseNumber}" groupName="Group1" visibleInFilterBar="true" mandatory="true">
+								<fb:control>
+									<HBox>
+										<Input value="{globalDataModel>/HeaderFilter/WarehouseNumber}" showValueHelp="true" valueHelpRequest="onValueHelpRequest('WH')" submit="onSubmit($event,'WH')"/>
+									</HBox>
+								</fb:control>
+							</fb:FilterGroupItem>
+							<fb:FilterGroupItem name="Storage Type" label="{i18n>StorageType}" groupName="Group1" visibleInFilterBar="true">
+								<fb:control>
+									<HBox>
+										<Input value="{globalDataModel>/HeaderFilter/StorageType}" showValueHelp="true" valueHelpRequest="onValueHelpRequest('ST')" submit="onSubmit($event,'ST')"
+										enabled="{= !${globalDataModel>/HeaderFilter/WarehouseNumber} ? false : true}"/>
+									</HBox>
+								</fb:control>
+							</fb:FilterGroupItem>
+							<fb:FilterGroupItem name="Storage Bin" label="{i18n>StorageBin}" groupName="Group1" visibleInFilterBar="true">
+								<fb:control>
+									<HBox class="sapUiTinyMarginTop">
+										<Input value="{globalDataModel>/HeaderFilter/StorageBin}" showValueHelp="true" valueHelpRequest="onValueHelpRequest('SB')"  width="11rem"  submit="onSubmit($event,'SB')"
+										enabled="{= !${globalDataModel>/HeaderFilter/WarehouseNumber} ? false : true}"/>
+										<ndc:BarcodeScannerButton 
+											scanSuccess="onScanSuccess($event,'SB')"
+											scanFail="onScanError($event,'SB')"
+											inputLiveUpdate="onScanLiveupdate($event,'SB')"
+											dialogTitle="Barcode Scanner for Storage Bin"
+											class="sampleBarcodeScannerButtonWithZebraEB"
+											visible="{= !${globalDataModel>/HeaderFilter/WarehouseNumber} ? false : true}"
+										/>
+									</HBox>
+								</fb:control>
+							</fb:FilterGroupItem>
+							<fb:FilterGroupItem name="Product" label="{i18n>Product}" groupName="Group1" visibleInFilterBar="true">
+								<fb:control>
+									<HBox class="sapUiTinyMarginTop">
+										<Input value="{globalDataModel>/HeaderFilter/Product}" showValueHelp="true" valueHelpRequest="onValueHelpRequest('Product')" width="11rem"  submit="onSubmit($event,'Product')"
+										enabled="{= !${globalDataModel>/HeaderFilter/WarehouseNumber} ? false : true}"/>
+										<ndc:BarcodeScannerButton
+											scanSuccess="onScanSuccess($event,'Product')"
+											scanFail="onScanError($event,'Product')"
+											inputLiveUpdate="onScanLiveupdate($event,'Product')"
+											dialogTitle="Barcode Scanner for Product"
+											class="sampleBarcodeScannerButtonWithZebraEB"
+											visible="{= !${globalDataModel>/HeaderFilter/WarehouseNumber} ? false : true}"
+										/>
+									</HBox>
+								</fb:control>
+							</fb:FilterGroupItem>
+							<fb:FilterGroupItem name="Handling Unit" label="{i18n>HandlingUnit}" groupName="Group1" visibleInFilterBar="true">
+								<fb:control>
+									<HBox class="sapUiTinyMarginTop">
+										<Input value="{globalDataModel>/HeaderFilter/HandlingUnit}" showValueHelp="true" valueHelpRequest="onValueHelpRequest('HU')" width="11rem"  submit="onSubmit($event,'HU')"
+										enabled="{= !${globalDataModel>/HeaderFilter/WarehouseNumber} ? false : true}"/>
+										<ndc:BarcodeScannerButton
+											scanSuccess="onScanSuccess($event,'HU')"
+											scanFail="onScanError($event,'HU')"
+											inputLiveUpdate="onScanLiveupdate($event,'HU')"
+											dialogTitle="Barcode Scanner for Handling Unit"
+											class="sampleBarcodeScannerButtonWithZebraEB"
+											visible="{= !${globalDataModel>/HeaderFilter/WarehouseNumber} ? false : true}"
+										/>
+									</HBox>
+								</fb:control>
+							</fb:FilterGroupItem>
+							<fb:FilterGroupItem name="Stock Type" label="{i18n>StockType}" groupName="Group1" visibleInFilterBar="{= ${globalDataModel>/Source} === 'Stock Type' ? true : false}">
+								<fb:control>
+									<HBox>
+										<Input value="{globalDataModel>/HeaderFilter/StockType}" showValueHelp="true" valueHelpRequest="onValueHelpRequest('Stock Type')" submit="onSubmit($event,'Stock Type')"
+										enabled="{= !${globalDataModel>/HeaderFilter/WarehouseNumber} ? false : true}"/>
+									</HBox>
+								</fb:control>
+							</fb:FilterGroupItem>
+							<fb:FilterGroupItem name="Batch" label="{i18n>Batch}" groupName="Group1" visibleInFilterBar="true">
+								<fb:control>
+									<HBox class="sapUiTinyMarginTop">
+										<Input value="{globalDataModel>/HeaderFilter/Batch}" showValueHelp="true" valueHelpRequest="onValueHelpRequest('Batch')" width="11rem" submit="onSubmit($event,'Batch')"
+										enabled="{= !${globalDataModel>/HeaderFilter/WarehouseNumber} ? false : true}"/>
+										<ndc:BarcodeScannerButton
+											scanSuccess="onScanSuccess($event,'Batch')"
+											scanFail="onScanError($event,'Batch')"
+											inputLiveUpdate="onScanLiveupdate($event,'Batch')"
+											dialogTitle="Barcode Scanner for Batch"
+											class="sampleBarcodeScannerButtonWithZebraEB"
+											visible="{= !${globalDataModel>/HeaderFilter/WarehouseNumber} ? false : true}"
+										/>
+									</HBox>
+								</fb:control>
+							</fb:FilterGroupItem>
+						</fb:filterGroupItems>
+					</fb:FilterBar>
+				</f:content>
+			</f:DynamicPageHeader>
+		</f:header>
+		<f:content>
+			<VBox justifyContent="Start">
+				<Table id="inventoryTable" inset="false" mode="MultiSelect" sticky="ColumnHeaders,HeaderToolbar">
+					<headerToolbar>
+						<OverflowToolbar>
+							<ToolbarSpacer/>
+							<Button text="{i18n>Move}" press="onMovePress" visible="{= ${globalDataModel>/Source} === 'Stock Type' ? false : true}"/>
+							<Button text="{i18n>Modify}" press="onModifyPress" visible="{= ${globalDataModel>/Source} === 'Stock Type' ? true : false}"/>
+						</OverflowToolbar>
+					</headerToolbar>
+					<columns>
+						<Column demandPopin="true"
+      							minScreenWidth="Tablet"
+      							popinDisplay="Inline">
+							<Text text="{i18n>StorageType}"/>
+						</Column>
+						<Column demandPopin="true"
+      							minScreenWidth="Tablet"
+      							popinDisplay="Inline">
+							<Text text="{i18n>StorageBin}"/>
+						</Column>
+						<Column demandPopin="true"
+      							minScreenWidth="Tablet"
+      							popinDisplay="Inline">
+							<Text text="{i18n>Product}"/>
+						</Column>
+						<Column width="20%" demandPopin="true"
+      							minScreenWidth="Tablet"
+      							popinDisplay="Inline">
+							<Text text="{i18n>ProductDescription}"/>
+						</Column>
+						<Column demandPopin="true"
+      							minScreenWidth="Tablet"
+      							popinDisplay="Inline">
+							<Text text="{i18n>HandlingUnit}"/>
+						</Column>
+						<Column demandPopin="true"
+      							minScreenWidth="Tablet"
+      							popinDisplay="Inline">
+							<Text text="{i18n>Batch}"/>
+						</Column>
+						<Column demandPopin="true"
+      							minScreenWidth="Tablet"
+      							popinDisplay="Inline">
+							<Text text="{i18n>SerialNumber}"/>
+						</Column>
+						<Column demandPopin="true"
+      							minScreenWidth="Tablet"
+      							popinDisplay="Inline">
+							<Text text="{i18n>Quantity}"/>
+						</Column>
+						<Column demandPopin="true"
+      							minScreenWidth="Tablet"
+      							popinDisplay="Inline"
+								visible="{= ${globalDataModel>/Source} === 'Stock Type' ? true : false}">
+							<Text text="{i18n>StockType}"/>
+						</Column>
+						<Column demandPopin="true"
+      							minScreenWidth="Tablet"
+     							popinDisplay="Inline">
+							<Text text="{i18n>Actions}"/>
+						</Column>
+					</columns>
+					<items></items>
+				</Table>
+			</VBox>
+		</f:content>
+		<f:footer>
+				<OverflowToolbar>
+					<Button
+					icon="sap-icon://message-error"
+					type="Negative"
+					text= "{path: 'globalDataModel>/errorMessages', formatter: '.handleErrorCount'}"
+					press=".handleMessageViewPress"/>
+					<ToolbarSpacer/>
+				</OverflowToolbar>
+			</f:footer>
+	</f:DynamicPage>
+</mvc:View>

@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog
+		title="{i18n>StorageTypes}"
+		items="{
+			path: '/ZEWM_I_StorageTypeVH'
+		}"
+		search=".onValueHelpSearch($event,'ST')"
+		confirm=".onValueHelpConfirm($event,'ST')"
+		cancel=".onValueHelpClose">
+		<StandardListItem
+			title="{StorageType}"
+			description="{StorageType_Text}"  />
+	</SelectDialog>
+</core:FragmentDefinition>
