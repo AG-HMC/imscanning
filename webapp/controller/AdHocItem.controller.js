@@ -278,6 +278,13 @@ sap.ui.define([
                 } catch (error) {
                     BusyIndicator.hide();
                     // Handle any errors that occurred in the process
+                    MessageBox.error(error, {
+                        actions: ["Ok"],
+                        emphasizedAction: "Ok",
+                        onClose: function(sAction) {
+                        }.bind(this),
+                        dependentOn: this.getView()
+                    });
                     console.error("Error during resource assignment flow:", error);
                 }
             },
