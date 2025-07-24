@@ -175,18 +175,21 @@ sap.ui.define([
                     // Build payload for posting
                     payload.EWMWarehouse = obj.ActiveItem.WarehouseNumber;
                     payload.Product = obj.ActiveItem.Product;
-                    payload.EWMStockType = obj.ActiveItem.StockType;
+                    payload.EWMStockType = obj.ActiveItem.SourceStockType;
                     payload.EWMStockOwner = obj.ActiveItem.StockOwner;
                     payload.EntitledToDisposeParty = obj.ActiveItem.EntitledToDisposeParty;
                     payload.AlternativeUnit = obj.ActiveItem.AlternativeUnit;
                     payload.SourceStorageType = obj.ActiveItem.StorageType;
                     payload.SourceStorageBin = obj.ActiveItem.StorageBin;
+                    payload.SourceHandlingUnit = obj.ActiveItem.SourceHandlingUnit;
+                    payload.DestinationHandlingUnit = obj.ActiveItem.DestinationHandlingUnit;
+                    // payload.EWMStockType = obj.ActiveItem.SourceStockType;
     
                     payload.TargetQuantityInAltvUnit = Number(obj.TargetData.Quantity);
-                    payload.DestinationStorageType = obj.TargetData.StockType;
+                    payload.DestinationStorageType = obj.TargetData.StorageType;
                     payload.DestinationStorageBin = obj.TargetData.StorageBin;
     
-                    payload.WarehouseProcessType = "P999"; // fixed value
+                    payload.WarehouseProcessType = "9999"; // fixed value
     
                     // Post data to backend
                     this._postService(payload);
@@ -225,17 +228,8 @@ sap.ui.define([
                                 },
                                 success: function(response) {
                                     console.log("POST success:", response);
-                                    BusyIndicator.hide();
-                                    // Success message and navigate forward
-                                    var message = this._getText("warehouseOrderConfirmed", response.WarehouseOrder)
-                                    MessageBox.success(message, {
-                                        actions: ["Ok"],
-                                        emphasizedAction: "Ok",
-                                        onClose: function(sAction) {
-                                            this._handlePostingSuccess.bind(this)();
-                                        }.bind(this),
-                                        dependentOn: this.getView()
-                                    });
+
+                                    this.assignResourceFlow.bind(this)(response.EWMWarehouse, response.WarehouseOrder);
                                 }.bind(this),
                                 error: function(xhr, status, error) {
                                     BusyIndicator.hide();
@@ -252,6 +246,42 @@ sap.ui.define([
                     this.handleException(e);
                 }
             },
+
+            assignResourceFlow: async function (WarehouseNumber, WarehouseOrder) {
+                try {
+                    // Step 1: Fetch CSRF Token and ETag
+                    const { Token, Etag } = await this._fetchEtagAndTokenForResouceAssignment(WarehouseNumber, WarehouseOrder);
+            
+                    // Step 2: Log on to the warehouse resource
+                    await this._logonToWarehouseResource(WarehouseNumber, Token);
+            
+                    // Step 3: Assign resource to the warehouse order
+                    await this._assignResouce(WarehouseNumber, WarehouseOrder, Token, Etag);
+            
+                    // Step 4: Log off from the warehouse resource
+                    await this._logonOffWarehouseResource(WarehouseNumber, Token);
+            
+                    // Final success message (optional)
+                    console.log("Resource successfully assigned and logged off.");
+                    BusyIndicator.hide();
+                    // Success message and navigate forward
+                    var message = this._getText("warehouseOrderConfirmed", WarehouseOrder)
+                    MessageBox.success(message, {
+                        actions: ["Ok"],
+                        emphasizedAction: "Ok",
+                        onClose: function(sAction) {
+                            this._handlePostingSuccess.bind(this)();
+                        }.bind(this),
+                        dependentOn: this.getView()
+                    });
+            
+                } catch (error) {
+                    BusyIndicator.hide();
+                    // Handle any errors that occurred in the process
+                    console.error("Error during resource assignment flow:", error);
+                }
+            },
+
             onValueHelpConfirm: function(oEvent, source) {
                 try {
                     // Update selected value from value help dialog
@@ -370,7 +400,7 @@ sap.ui.define([
     
                     const filterConfig = {
                         'SB': {
-                            path: "/ZEWM_I_StorageBinVH",
+                            path: "/ZSCM_I_StorageBinVH",
                             key: "StorageBin",
                             filterKey: "StorageBin",
                             additionalFilters: ["WarehouseNumber", "StorageType"]

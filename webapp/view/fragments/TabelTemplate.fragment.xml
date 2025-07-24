@@ -5,7 +5,7 @@
 								<Text text="{StorageBin}"/>
 								<Text text="{Product}"/>
 								<Text text="{Description}"/>
-								<Text text="{HandlingUnit}"/>
+								<Text text="{SourceHandlingUnit}"/>
 								<Text text="{Batch}"/>
 								<Text text="{SerialNumber}"/>
 								<ObjectNumber number="{Quantity}" unit="{BaseUoM}" />

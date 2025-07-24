@@ -2,7 +2,7 @@
 	<SelectDialog
 		title="{i18n>Warehouses}"
 		items="{
-			path: '/ZEWM_I_WareHouseNumberVH'
+			path: '/ZSCM_I_WareHouseNumberVH'
 		}"
 		search=".onValueHelpSearch($event,'WH')"
 		confirm=".onValueHelpConfirm($event,'WH')"

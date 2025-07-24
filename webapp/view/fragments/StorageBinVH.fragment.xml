@@ -2,7 +2,7 @@
 	<SelectDialog
 		title="{i18n>StorageBins}"
 		items="{
-			path: '/ZEWM_I_StorageBinVH'
+			path: '/ZSCM_I_StorageBinVH'
 		}"
 		search=".onValueHelpSearch($event,'SB')"
 		confirm=".onValueHelpConfirm($event,'SB')"

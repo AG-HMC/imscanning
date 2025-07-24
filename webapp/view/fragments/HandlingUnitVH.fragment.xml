@@ -2,7 +2,7 @@
 	<SelectDialog
 		title="{i18n>HandlingUnits}"
 		items="{
-			path: '/ZEWM_I_HandlingUnitTypeVH'
+			path: '/ZSCM_I_HandlingUnitTypeVH'
 		}"
 		search=".onValueHelpSearch($event,'HU')"
 		confirm=".onValueHelpConfirm($event,'HU')"

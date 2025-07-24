@@ -47,9 +47,9 @@
 					<Label text="{i18n>SourceQuantity}" />
 					<ObjectNumber number="{globalDataModel>Quantity}" unit="{globalDataModel>BaseUoM}" />
 					<Label text="{i18n>SourceHU}" />
-					<Text text="{globalDataModel>HandlingUnit}" />
+					<Text text="{globalDataModel>SourceHandlingUnit}" />
 					<Label text="{i18n>SourceStockType}" />
-					<Text text="{globalDataModel>StockType}" />
+					<Text text="{globalDataModel>SourceStockType}" />
 				</form:SimpleForm>
 				<!-- Movement Data -->
 				<Title text="Movement Data" level="H2" />

@@ -2,7 +2,7 @@
 	<SelectDialog
 		title="{i18n>Products}"
 		items="{
-			path: '/ZEWM_I_ProductVH'
+			path: '/ZSCM_I_ProductVH'
 		}"
 		search=".onValueHelpSearch($event,'Product')"
 		confirm=".onValueHelpConfirm($event,'Product')"

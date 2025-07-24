@@ -362,6 +362,158 @@ sap.ui.define([
         onBackPress: function() {
             this._errorDialog.getContent()[0].navigateBack();
             sap.ui.getCore().byId("backButton").setVisible(false);
+        }, 
+
+        // Gets CSRF token and ETag for resource assignment
+        _fetchEtagAndTokenForResouceAssignment: function(WarehouseNumber, WarehouseOrder) {
+            return new Promise((resolve, reject) => {
+                var sToken = "";
+                var sUrl = "/sap/opu/odata4/sap/api_warehouse_order_task_2/srvd_a2x/sap/warehouseorder/0001/WarehouseOrder(EWMWarehouse='" + WarehouseNumber + "',WarehouseOrder='" + WarehouseOrder + "')";
+                $.ajax({
+                    url: sUrl,
+                    type: "GET",
+                    headers: {
+                        "X-CSRF-Token": "Fetch"
+                    },
+                    success: function(response, textStatus, jqXHR) {
+                        sToken = jqXHR.getResponseHeader("X-CSRF-Token");
+                        resolve({
+                            Token: sToken,
+                            Etag: response['@odata.etag']
+                        });
+                        
+                    }.bind(this),
+                    error: function(xhr, status, error) {
+                       
+                        reject(xhr.responseText);
+                    }.bind(this)
+                });
+            });
+        },
+
+        // Logs on to the warehouse resource
+        _logonToWarehouseResource: function(WarehouseNumber, sToken) {
+            return new Promise((resolve, reject) => {
+                if (sap.ushell.Container.getService("UserInfo").getId() !== 'DEFAULT_USER')
+                    var Resource = sap.ushell.Container.getService("UserInfo").getId();
+                    else
+                        Resource = "SAKTHEESWA";
+                var sUrl = "/sap/opu/odata4/sap/api_warehouse_resource_2/srvd_a2x/sap/warehouseresource/0001/WarehouseResource(EWMWarehouse='" + WarehouseNumber + "',EWMResource='" + Resource + "')/SAP__self.LogonToWarehouseResource";
+
+                jQuery.ajax({
+                    url: sUrl,
+                    method: "POST",
+                    contentType: "application/json",
+                    headers: {
+                        "X-CSRF-Token": sToken,
+                        "Accept": "application/json"
+                    },
+                    success: function(oData) {
+                        console.log("PATCH Success:", oData);
+                        // Handle success
+                        resolve();
+                      
+                    }.bind(this),
+                    error: function(oError) {
+                        const errorMsg = oError?.responseText ? JSON.parse(oError.responseText).error.message : "Unknown error";
+                        reject(errorMsg);
+                     
+                    }.bind(this)
+                });
+            });
+        },
+
+        // Assigns a resource to a warehouse order
+        _assignResouce: function(WarehouseNumber, WarehouseOrder, sToken, etag) {
+            return new Promise((resolve, reject) => {
+                var sUrl = "/sap/opu/odata4/sap/api_warehouse_order_task_2/srvd_a2x/sap/warehouseorder/0001/WarehouseOrder(EWMWarehouse='" + WarehouseNumber + "',WarehouseOrder='" + WarehouseOrder + "')/SAP__self.AssignWarehouseOrder";
+                if (sap.ushell.Container.getService("UserInfo").getId() !== 'DEFAULT_USER')
+                    var Resource = sap.ushell.Container.getService("UserInfo").getId();
+                    else
+                        Resource = "SAKTHEESWA";
+                var oPayload = {
+                    "EWMResource": Resource
+                };
+
+                jQuery.ajax({
+                    url: sUrl,
+                    method: "POST",
+                    contentType: "application/json",
+                    headers: {
+                        "X-CSRF-Token": sToken,
+                        "Accept": "application/json",
+                        "If-Match": etag
+                    },
+                    data: JSON.stringify(oPayload),
+                    success: function(oData) {
+                        console.log("PATCH Success:", oData);
+                        resolve();
+              
+                    }.bind(this),
+                    error: function(oError) {
+                        const errorMsg = oError?.responseText ? JSON.parse(oError.responseText).error.message : "Unknown error";
+                        reject(errorMsg);
+         
+                    }.bind(this)
+                });
+            });
+        },
+
+        // Logs off the currently assigned resource
+        _logonOffWarehouseResource: function(WarehouseNumber, sToken) {
+            return new Promise((resolve, reject) => {
+                if (sap.ushell.Container.getService("UserInfo").getId() !== 'DEFAULT_USER')
+                var Resource = sap.ushell.Container.getService("UserInfo").getId();
+                else
+                    Resource = "SAKTHEESWA";
+                var sUrl = "/sap/opu/odata4/sap/api_warehouse_resource_2/srvd_a2x/sap/warehouseresource/0001/WarehouseResource(EWMWarehouse='" + WarehouseNumber + "',EWMResource='" + Resource + "')/SAP__self.LogoffFromWarehouseResource";
+
+                jQuery.ajax({
+                    url: sUrl,
+                    method: "POST",
+                    contentType: "application/json",
+                    headers: {
+                        "X-CSRF-Token": sToken,
+                        "Accept": "application/json"
+                    },
+                    success: function(oData) {
+                        resolve();
+
+                    }.bind(this),
+                    error: function(oError) {
+                        const errorMsg = oError?.responseText ? JSON.parse(oError.responseText).error.message : "Unknown error";
+                        reject(errorMsg);
+            
+                    }.bind(this)
+                });
+            });
+        },
+
+        _unassignWarehouseResource: function(WarehouseNumber, WarehouseOrder, sToken, etag){
+            return new Promise((resolve, reject) => {
+                var sUrl = "/sap/opu/odata4/sap/api_warehouse_order_task_2/srvd_a2x/sap/warehouseorder/0001/WarehouseOrder(EWMWarehouse='" + WarehouseNumber + "',WarehouseOrder='" + WarehouseOrder + "')/SAP__self.UnassignWarehouseOrder";
+
+                jQuery.ajax({
+                    url: sUrl,
+                    method: "POST",
+                    contentType: "application/json",
+                    headers: {
+                        "X-CSRF-Token": sToken,
+                        "Accept": "application/json",
+                        "If-Match": etag
+                    },
+                    success: function(oData) {
+                        console.log("PATCH Success:", oData);
+                        resolve();
+              
+                    }.bind(this),
+                    error: function(oError) {
+                        const errorMsg = oError?.responseText ? JSON.parse(oError.responseText).error.message : "Unknown error";
+                        reject(errorMsg);
+         
+                    }.bind(this)
+                });
+            });
         }
     });
 });

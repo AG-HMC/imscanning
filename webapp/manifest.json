@@ -24,7 +24,7 @@
         }
       },
       "mainService": {
-        "uri": "/sap/opu/odata/sap/ZEWM_ADHOC_MOVEMENT_UI/",
+        "uri": "/sap/opu/odata/sap/ZSCM_ADHOC_MOVEMENT_UI/",
         "type": "OData",
         "settings": {
           "annotations": [
