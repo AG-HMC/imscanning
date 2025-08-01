@@ -55,7 +55,11 @@
         "settings": {
           "odataVersion": "2.0"
         }
-      }
+      },
+      "vhService": {
+          "uri": "/sap/opu/odata/sap/ZSCM_INT_MOV_SCANNING_VH_SRV",
+          "type": "OData"
+        }
     }
   },
   "sap.ui": {
@@ -115,6 +119,11 @@
       },
       "defaultValueModel": {
         "dataSource": "defaultValueService",
+        "preload": true,
+        "settings": {}
+      },
+      "valueHelpModel": {
+        "dataSource": "vhService",
         "preload": true,
         "settings": {}
       }

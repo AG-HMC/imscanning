@@ -2,13 +2,13 @@
 	<SelectDialog
 		title="{i18n>StockTypes}"
 		items="{
-			path: '/ZSCM_I_StockTypeVH'
+			path: 'valueHelpModel>/StockTypeVHSet'
 		}"
 		search=".onValueHelpSearch($event,'Stock Type')"
 		confirm=".onValueHelpConfirm($event,'Stock Type')"
 		cancel=".onValueHelpClose">
 		<StandardListItem
-			title="{StockType}"
-			description="{StockTypeText}"/>
+			title="{valueHelpModel>StockType}"
+			description="{valueHelpModel>StockTypeText}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

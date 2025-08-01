@@ -80,7 +80,8 @@
 						</ndc:BarcodeScannerButton>
 					</HBox>
 					<Label text="Target Quantity" />
-					<Input value="{globalDataModel>Quantity}" type="Number">
+					<Input value="{globalDataModel>Quantity}" type="Number"
+					enabled="{= ${globalDataModel>/ActiveItem/SourceHandlingUnit} === '' ? true: false}">
 						<layoutData>
 							<layout:GridData span="XL2 L2 M2 S6" />
 						</layoutData>

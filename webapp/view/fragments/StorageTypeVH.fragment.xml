@@ -2,13 +2,13 @@
 	<SelectDialog
 		title="{i18n>StorageTypes}"
 		items="{
-			path: '/ZSCM_I_StorageTypeVH'
+			path: 'valueHelpModel>/StorageTypeVHSet'
 		}"
 		search=".onValueHelpSearch($event,'ST')"
 		confirm=".onValueHelpConfirm($event,'ST')"
 		cancel=".onValueHelpClose">
 		<StandardListItem
-			title="{StorageType}"
-			description="{StorageType_Text}"  />
+			title="{valueHelpModel>StorageType}"
+			description="{valueHelpModel>StorageType_Text}"  />
 	</SelectDialog>
 </core:FragmentDefinition>

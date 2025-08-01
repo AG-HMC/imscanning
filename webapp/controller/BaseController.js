@@ -112,7 +112,7 @@ sap.ui.define([
         _validateScanValue: function(path, filter, resolve, reject, messageText) {
             try {
                 BusyIndicator.show();
-                this._oComponent.getModel().read(path, {
+                this._oComponent.getModel("valueHelpModel").read(path, {
                     filters: filter,
                     success: function(data) {
                         BusyIndicator.hide();
@@ -172,7 +172,7 @@ sap.ui.define([
                         additionalFilters: ["WarehouseNumber", "StorageType", "StorageBin"]
                     },
                     'Product': {
-                        searchFields: ["EWMWarehouse", "EWMWarehouseDescription"],
+                        searchFields: ["Product", "ProductDescription"],
                         additionalFilters: ["WarehouseNumber", "StorageType", "StorageBin"]
                     },
                     'Batch': {
@@ -356,12 +356,14 @@ sap.ui.define([
         },
 
         onItemSelect: function() {
-            sap.ui.getCore().byId("backButton").setVisible(true);
+            // sap.ui.getCore().byId("backButton").setVisible(true);
+            this.getView().byId("errorDialogFragment--backButton").setVisible(true);
         },
 
         onBackPress: function() {
             this._errorDialog.getContent()[0].navigateBack();
-            sap.ui.getCore().byId("backButton").setVisible(false);
+            // sap.ui.getCore().byId("backButton").setVisible(false);
+            this.getView().byId("errorDialogFragment--backButton").setVisible(false);
         }, 
 
         // Gets CSRF token and ETag for resource assignment
@@ -502,6 +504,130 @@ sap.ui.define([
                         "Accept": "application/json",
                         "If-Match": etag
                     },
+                    success: function(oData) {
+                        console.log("PATCH Success:", oData);
+                        resolve();
+              
+                    }.bind(this),
+                    error: function(oError) {
+                        const errorMsg = oError?.responseText ? JSON.parse(oError.responseText).error.message : "Unknown error";
+                        reject(errorMsg);
+         
+                    }.bind(this)
+                });
+            });
+        },
+
+        // Assigns a resource to a warehouse order
+        _confirm: function(WarehouseNumber, WarehouseTask, WarehouseTaskItem, sToken, etag) {
+            return new Promise((resolve, reject) => {
+                var sUrl = "/sap/opu/odata4/sap/api_warehouse_order_task_2/srvd_a2x/sap/warehouseorder/0001/WarehouseTask(EWMWarehouse='" + WarehouseNumber + "',WarehouseTask='" + WarehouseTask + "',WarehouseTaskItem='" + WarehouseTaskItem +    "')/SAP__self.ConfirmWarehouseTaskExact";
+
+                jQuery.ajax({
+                    url: sUrl,
+                    method: "POST",
+                    contentType: "application/json",
+                    headers: {
+                        "X-CSRF-Token": sToken,
+                        "Accept": "application/json",
+                        "If-Match": etag
+                    },
+                    // data: JSON.stringify(oPayload),
+                    success: function(oData) {
+                        console.log("PATCH Success:", oData);
+                        resolve();
+              
+                    }.bind(this),
+                    error: function(oError) {
+                        const errorMsg = oError?.responseText ? JSON.parse(oError.responseText).error.message : "Unknown error";
+                        reject(errorMsg);
+         
+                    }.bind(this)
+                });
+            });
+        },
+
+        _ConfirmWarehouseTaskProduct: function(WarehouseNumber, WarehouseTask, WarehouseTaskItem, sToken, etag, item){
+            return new Promise((resolve, reject) => {
+                var sUrl = "/sap/opu/odata4/sap/api_warehouse_order_task_2/srvd_a2x/sap/warehouseorder/0001/WarehouseTask(EWMWarehouse='" + WarehouseNumber + "',WarehouseTask='" + WarehouseTask + "',WarehouseTaskItem='" + WarehouseTaskItem +    "')/SAP__self.ConfirmWarehouseTaskProduct";
+                var oPayload = {
+                    AlternativeUnit: item.AlternativeUnit,
+                    ActualQuantityInAltvUnit: item.TargetQuantityInAltvUnit,
+                    DifferenceQuantityInAltvUnit: 0,
+                    WhseTaskExceptionCodeQtyDiff: "",
+                    DestinationStorageBin: item.DestinationStorageBin,
+                    WhseTaskExCodeDestStorageBin: "",
+                    SourceHandlingUnit: item.SourceHandlingUnit,
+                    DestinationHandlingUnit: item.DestinationHandlingUnit,
+                }
+                jQuery.ajax({
+                    url: sUrl,
+                    method: "POST",
+                    contentType: "application/json",
+                    headers: {
+                        "X-CSRF-Token": sToken,
+                        "Accept": "application/json",
+                        "If-Match": etag
+                    },
+                    data: JSON.stringify(oPayload),
+                    success: function(oData) {
+                        console.log("PATCH Success:", oData);
+                        resolve();
+              
+                    }.bind(this),
+                    error: function(oError) {
+                        const errorMsg = oError?.responseText ? JSON.parse(oError.responseText).error.message : "Unknown error";
+                        reject(errorMsg);
+         
+                    }.bind(this)
+                });
+            });
+        },
+
+        _AddSrlNmbrToTaskConf: function(WarehouseNumber, WarehouseTask, WarehouseTaskItem, sToken, etag, SerialNumber){
+            return new Promise((resolve, reject) => {
+                var sUrl = "/sap/opu/odata4/sap/api_warehouse_order_task_2/srvd_a2x/sap/warehouseorder/0001/WarehouseTask(EWMWarehouse='" + WarehouseNumber + "',WarehouseTask='" + WarehouseTask + "',WarehouseTaskItem='" + WarehouseTaskItem +    "')/SAP__self.AddSrlNmbrToTaskConf";
+                var oPayload = {
+                    "EWMSerialNumber" : SerialNumber
+                };
+                jQuery.ajax({
+                    url: sUrl,
+                    method: "POST",
+                    contentType: "application/json",
+                    headers: {
+                        "X-CSRF-Token": sToken,
+                        "Accept": "application/json",
+                        "If-Match": etag
+                    },
+                    data: JSON.stringify(oPayload),
+                    success: function(oData) {
+                        console.log("PATCH Success:", oData);
+                        resolve();
+              
+                    }.bind(this),
+                    error: function(oError) {
+                        const errorMsg = oError?.responseText ? JSON.parse(oError.responseText).error.message : "Unknown error";
+                        reject(errorMsg);
+         
+                    }.bind(this)
+                });
+            });
+        },
+
+        _ConfirmWarehouseTaskExact: function(WarehouseNumber, WarehouseTask, WarehouseTaskItem, sToken, etag){
+            return new Promise((resolve, reject) => {
+                var sUrl = "/sap/opu/odata4/sap/api_warehouse_order_task_2/srvd_a2x/sap/warehouseorder/0001/WarehouseTask(EWMWarehouse='" + WarehouseNumber + "',WarehouseTask='" + WarehouseTask + "',WarehouseTaskItem='" + WarehouseTaskItem +    "')/SAP__self.ConfirmWarehouseTaskExact";
+                
+                jQuery.ajax({
+                    url: sUrl,
+                    method: "POST",
+                    contentType: "application/json",
+                    headers: {
+                        "X-CSRF-Token": sToken,
+                        "Accept": "application/json",
+                        "If-Match": etag
+                    },
+                    // data: JSON.stringify(oPayload),
                     success: function(oData) {
                         console.log("PATCH Success:", oData);
                         resolve();

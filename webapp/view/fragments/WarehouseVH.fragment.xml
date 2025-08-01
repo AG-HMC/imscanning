@@ -2,13 +2,13 @@
 	<SelectDialog
 		title="{i18n>Warehouses}"
 		items="{
-			path: '/ZSCM_I_WareHouseNumberVH'
+			path: 'valueHelpModel>/WareHouseNumberVHSet'
 		}"
 		search=".onValueHelpSearch($event,'WH')"
 		confirm=".onValueHelpConfirm($event,'WH')"
 		cancel=".onValueHelpClose">
 		<StandardListItem
-			title="{WarehouseNumber}" 
-			description="{WarehouseNumber_Text}" />
+			title="{valueHelpModel>WarehouseNumber}" 
+			description="{valueHelpModel>WarehouseNumber_Text}" />
 	</SelectDialog>
 </core:FragmentDefinition>

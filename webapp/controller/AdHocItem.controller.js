@@ -23,6 +23,10 @@ sap.ui.define([
                     // Reset TargetData on every route match
                     obj.errorMessages = [];
                     obj.TargetData = {};
+                    if(obj.ActiveItem){
+                    if(obj.ActiveItem.SourceHandlingUnit !== '')
+                        obj.TargetData.Quantity = obj.ActiveItem.Quantity;
+                }
                     this._oComponent.getModel("globalDataModel").refresh(true);
                     // Redirect if route is Home
                     if (oEvent.getParameter("name") === 'RouteHome') {
@@ -182,7 +186,7 @@ sap.ui.define([
                     payload.SourceStorageType = obj.ActiveItem.StorageType;
                     payload.SourceStorageBin = obj.ActiveItem.StorageBin;
                     payload.SourceHandlingUnit = obj.ActiveItem.SourceHandlingUnit;
-                    payload.DestinationHandlingUnit = obj.ActiveItem.DestinationHandlingUnit;
+                    // payload.DestinationHandlingUnit = obj.ActiveItem.DestinationHandlingUnit; commented for testing
                     // payload.EWMStockType = obj.ActiveItem.SourceStockType;
     
                     payload.TargetQuantityInAltvUnit = Number(obj.TargetData.Quantity);
@@ -192,14 +196,14 @@ sap.ui.define([
                     payload.WarehouseProcessType = "9999"; // fixed value
     
                     // Post data to backend
-                    this._postService(payload);
+                    this._postService(payload,obj.ActiveItem);
                 } catch (e) {
                     this.handleException(e);
                 }
     
             },
     
-            _postService: function(payload) {
+            _postService: function(payload, sourceData) {
                 try {
                     var obj = this._oComponent.getModel("globalDataModel").getData()
                     obj.errorMessages = [];
@@ -229,7 +233,7 @@ sap.ui.define([
                                 success: function(response) {
                                     console.log("POST success:", response);
 
-                                    this.assignResourceFlow.bind(this)(response.EWMWarehouse, response.WarehouseOrder);
+                                    this.assignResourceFlow.bind(this)(response.EWMWarehouse, response.WarehouseOrder, response.WarehouseTask, response.WarehouseTaskItem, response, sourceData);
                                 }.bind(this),
                                 error: function(xhr, status, error) {
                                     BusyIndicator.hide();
@@ -247,7 +251,7 @@ sap.ui.define([
                 }
             },
 
-            assignResourceFlow: async function (WarehouseNumber, WarehouseOrder) {
+            assignResourceFlow: async function (WarehouseNumber, WarehouseOrder,WarehouseTask , WarehouseTaskItem, data, sourceData) {
                 try {
                     // Step 1: Fetch CSRF Token and ETag
                     const { Token, Etag } = await this._fetchEtagAndTokenForResouceAssignment(WarehouseNumber, WarehouseOrder);
@@ -257,7 +261,21 @@ sap.ui.define([
             
                     // Step 3: Assign resource to the warehouse order
                     await this._assignResouce(WarehouseNumber, WarehouseOrder, Token, Etag);
-            
+                    // Step 3.1: Conirm warehouse task Exact
+                    if((!sourceData.SerialNumber && !sourceData.SourceHandlingUnit) || (!sourceData.SerialNumber && sourceData.SourceHandlingUnit) || (sourceData.SerialNumber && !sourceData.SourceHandlingUnit))
+                    await this._ConfirmWarehouseTaskExact(WarehouseNumber,WarehouseTask , WarehouseTaskItem, Token, Etag);
+                    
+                    
+                    else if((sourceData.SerialNumber && sourceData.SourceHandlingUnit)){
+                       // Step 3.1.1: Conirm warehouse task Product
+                        await this._ConfirmWarehouseTaskProduct(WarehouseNumber,WarehouseTask , WarehouseTaskItem, Token, Etag, data);
+
+                        // Step 3.2: Add Serial number to task
+                        // await this._AddSrlNmbrToTaskConf(WarehouseNumber,WarehouseTask , WarehouseTaskItem, Token, Etag, sourceData.SerialNumber);
+                    }
+                    else
+                    //Step 3.3: Confirm 
+                    await this._confirm(WarehouseNumber,WarehouseTask , WarehouseTaskItem, Token, Etag);
                     // Step 4: Log off from the warehouse resource
                     await this._logonOffWarehouseResource(WarehouseNumber, Token);
             
@@ -340,8 +358,13 @@ sap.ui.define([
                     obj.errorMessages = detailMessages;
                     this._oComponent.getModel("globalDataModel").refresh(true);
                     if (!this._errorDialog) {
-                        this._errorDialog = sap.ui.xmlfragment("imscanning.view.fragments.ErrorDialog",
-                            this);
+                        // this._errorDialog = sap.ui.xmlfragment("imscanning.view.fragments.ErrorDialog",
+                        //     this);
+                        this._errorDialog = sap.ui.xmlfragment(
+                            this.createId("errorDialogFragment"), // Unique fragment ID
+                            "imscanning.view.fragments.ErrorDialog",
+                            this
+                        );
                         this.getView().addDependent(this._errorDialog);
                     }
     
@@ -368,6 +391,8 @@ sap.ui.define([
                         // Proceed with next item
                         obj.ActiveItem = obj.selectedItems.find(item => item.Complete !== true);
                         obj.TargetData = {};
+                        if(obj.ActiveItem.SourceHandlingUnit !== '')
+                            obj.TargetData.Quantity = obj.ActiveItem.Quantity;
                         this._oComponent.getModel("globalDataModel").refresh(true);
                     } else {
                         // All done, go back to list

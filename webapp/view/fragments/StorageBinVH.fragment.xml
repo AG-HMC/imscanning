@@ -2,12 +2,12 @@
 	<SelectDialog
 		title="{i18n>StorageBins}"
 		items="{
-			path: '/ZSCM_I_StorageBinVH'
+			path: 'valueHelpModel>/StorageBinVHSet'
 		}"
 		search=".onValueHelpSearch($event,'SB')"
 		confirm=".onValueHelpConfirm($event,'SB')"
 		cancel=".onValueHelpClose">
 		<StandardListItem
-			title="{StorageBin}" />
+			title="{valueHelpModel>StorageBin}" />
 	</SelectDialog>
 </core:FragmentDefinition>

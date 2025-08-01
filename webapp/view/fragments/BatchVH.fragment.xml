@@ -2,12 +2,12 @@
 	<SelectDialog
 		title="{i18n>Batches}"
 		items="{
-			path: '/ZSCM_I_PhysStkBatchVH'
+			path: 'valueHelpModel>/BatchVHSet'
 		}"
 		search=".onValueHelpSearch($event,'Batch')"
 		confirm=".onValueHelpConfirm($event,'Batch')"
 		cancel=".onValueHelpClose">
 		<StandardListItem
-			title="{Batch}"/>
+			title="{valueHelpModel>Batch}"/>
 	</SelectDialog>
 </core:FragmentDefinition>

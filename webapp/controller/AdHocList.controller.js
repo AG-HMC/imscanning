@@ -193,7 +193,7 @@ sap.ui.define([
             
                         const filterConfig = {
                             'Product': {
-                                path: "/ZSCM_I_ProductVH",
+                                path: "/ProductVHSet",
                                 key: "Product",
                                 filterKey: "Product",
                                 additionalFilters: ["WarehouseNumber", "StorageType", "StorageBin"]
@@ -205,19 +205,19 @@ sap.ui.define([
                                 additionalFilters: []
                             },
                             'DSB': {
-                                                  path: "/ZSCM_I_StorageBinVH",
+                        path: "/StorageBinVHSet",
                         key: "StorageBin",
                         filterKey: "StorageBin",
                         additionalFilters: ["WarehouseNumber", "StorageType"]
                             },
                             'HU': {
-                                path: "/ZSCM_I_HandlingUnitTypeVH",
+                                path: "/HandlingUnitVHSet",
                                 key: "HandlingUnitNumber",
                                 filterKey: "HandlingUnit",
                                 additionalFilters: ["WarehouseNumber", "StorageType", "StorageBin"]
                             },
                             'Batch': {
-                                path: "/ZSCM_I_PhysStkBatchVH",
+                                path: "/BatchVHSet",
                                 key: "Batch",
                                 filterKey: "Batch",
                                 additionalFilters: ["WarehouseNumber", "StorageType", "StorageBin", "Product"]
@@ -637,49 +637,49 @@ sap.ui.define([
                 // Mapping of scan sources to paths and fields
                 const filterConfig = {
                     'Product': {
-                        path: "/ZSCM_I_ProductVH",
+                        path: "/ProductVHSet",
                         key: "Product",
                         filterKey: "Product",
                         additionalFilters: ["WarehouseNumber", "StorageType", "StorageBin"]
                     },
                     'SB': {
-                        path: "/ZSCM_I_StorageBinVH",
+                        path: "/StorageBinVHSet",
                         key: "StorageBin",
                         filterKey: "StorageBin",
                         additionalFilters: ["WarehouseNumber", "StorageType"]
                     },
                     'HU': {
-                        path: "/ZSCM_I_HandlingUnitTypeVH",
+                        path: "/HandlingUnitVHSet",
                         key: "HandlingUnitNumber",
                         filterKey: "HandlingUnit",
                         additionalFilters: ["WarehouseNumber", "StorageType", "StorageBin"]
                     },
                     'Batch': {
-                        path: "/ZSCM_I_PhysStkBatchVH",
+                        path: "/BatchVHSet",
                         key: "Batch",
                         filterKey: "Batch",
                         additionalFilters: ["WarehouseNumber", "StorageType", "StorageBin", "Product"]
                     },
                     'WH': {
-                        path: "/ZSCM_I_WareHouseNumberVH",
+                        path: "/WareHouseNumberVHSet",
                         key: "WarehouseNumber",
                         filterKey: "WarehouseNumber",
                         additionalFilters: []
                     },
                     'Stock Type': {
-                        path: "/ZSCM_I_StockTypeVH",
+                        path: "/StockTypeVHSet",
                         key: "StockType",
                         filterKey: "StockType",
                         additionalFilters: []
                     },
                     'Stock Type Target': {
-                        path: "/ZSCM_I_StockTypeVH",
+                        path: "/StockTypeVHSet",
                         key: "StockType",
                         filterKey: "StockTypeTarget",
                         additionalFilters: []
                     },
                     'ST': {
-                        path: "/ZSCM_I_StorageTypeVH",
+                        path: "/StorageTypeVHSet",
                         key: "StorageType",
                         filterKey: "StorageType",
                         additionalFilters: ["WarehouseNumber"]
@@ -846,8 +846,13 @@ sap.ui.define([
                     this._oComponent.getModel("globalDataModel").refresh(true);
                     BusyIndicator.hide();
                     if (!this._errorDialog) {
-                        this._errorDialog = sap.ui.xmlfragment("imscanning.view.fragments.ErrorDialog",
-                            this);
+                        // this._errorDialog = sap.ui.xmlfragment("imscanning.view.fragments.ErrorDialog",
+                        //     this);
+                        this._errorDialog = sap.ui.xmlfragment(
+                            this.createId("errorDialogFragment"), // Unique fragment ID
+                            "imscanning.view.fragments.ErrorDialog",
+                            this
+                        );
                         this.getView().addDependent(this._errorDialog);
                     }
     

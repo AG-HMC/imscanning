@@ -2,13 +2,13 @@
 	<SelectDialog
 		title="{i18n>HandlingUnits}"
 		items="{
-			path: '/ZSCM_I_HandlingUnitTypeVH'
+			path: 'valueHelpModel>/HandlingUnitVHSet'
 		}"
 		search=".onValueHelpSearch($event,'HU')"
 		confirm=".onValueHelpConfirm($event,'HU')"
 		cancel=".onValueHelpClose">
 		<StandardListItem
-			title="{HandlingUnit}"
-			description="{HandlingUnitType_Text}" />
+			title="{valueHelpModel>HandlingUnit}"
+			description="{valueHelpModel>HandlingUnitType_Text}" />
 	</SelectDialog>
 </core:FragmentDefinition>
