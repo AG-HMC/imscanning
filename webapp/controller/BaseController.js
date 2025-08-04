@@ -168,7 +168,7 @@ sap.ui.define([
                         additionalFilters: ["WarehouseNumber", "StorageType"]
                     },
                     'HU': {
-                        searchFields: ["HandlingUnitType", "HandlingUnitType_Text"],
+                        searchFields: ["HandlingUnit"],
                         additionalFilters: ["WarehouseNumber", "StorageType", "StorageBin"]
                     },
                     'Product': {

@@ -212,7 +212,7 @@ sap.ui.define([
                             },
                             'HU': {
                                 path: "/HandlingUnitVHSet",
-                                key: "HandlingUnitNumber",
+                                key: "HandlingUnit",
                                 filterKey: "HandlingUnit",
                                 additionalFilters: ["WarehouseNumber", "StorageType", "StorageBin"]
                             },
@@ -486,7 +486,7 @@ sap.ui.define([
                     aFilter.push(oFilter);
                 }
                 if (obj.HeaderFilter.HandlingUnit) {
-                    oFilter = new Filter("HandlingUnit", FilterOperator.EQ, obj.HeaderFilter.HandlingUnit);
+                    oFilter = new Filter("SourceHandlingUnit", FilterOperator.EQ, obj.HeaderFilter.HandlingUnit);
                     aFilter.push(oFilter);
                 }
                 if (obj.HeaderFilter.StockType) {
@@ -650,7 +650,7 @@ sap.ui.define([
                     },
                     'HU': {
                         path: "/HandlingUnitVHSet",
-                        key: "HandlingUnitNumber",
+                        key: "HandlingUnit",
                         filterKey: "HandlingUnit",
                         additionalFilters: ["WarehouseNumber", "StorageType", "StorageBin"]
                     },
